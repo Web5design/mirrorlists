@@ -5,6 +5,7 @@ from flask import Response
 from ConfigParser import SafeConfigParser
 import pygeoip
 from incf.countryutils import transformations
+import random
 
 app = Flask(__name__)
 
@@ -20,9 +21,24 @@ def get_continent(host_ip):
     else:
         return transformations.cca_to_ctn(country)
 
-def build_list_from_config(continent, mirrors):
-    for key,value in config.items(continent):
+def get_enterprise():
+    mirrors = []
+
+    for key,value in config.items("Enterprise"):
         mirrors.append(key)
+
+    return mirrors
+
+def build_list_from_config(continent, mirrors):
+    current_mirrors = []
+
+    for key,value in config.items(continent):
+        current_mirrors.append(key)
+
+    random.shuffle(current_mirrors)
+
+    for mirror in current_mirrors:
+        mirrors.append(mirror)
 
     return mirrors
 
@@ -57,16 +73,21 @@ def get_mirrors(continent):
 def request_mirrorlist():
     config.read('eucalyptus_mirrors.conf')
 
-    continent = get_continent(str(request.remote_addr))
-    mirrors = get_mirrors(continent)
-
+    protocol = "http://"
     release = request.values.get('release', '6')
     arch = request.values.get('arch', 'x86_64')
     distro = request.values.get('distro', 'centos')
     version = request.values.get('version', config.get('Config', 'eucalyptus-latest'))
     product = request.values.get('product', 'eucalyptus')
 
-    mirrorlist = render_template('mirrorlist', mirrors=mirrors, release=release, arch=arch, distro=distro, version=version, product=product)
+    if product == "enterprise":
+        mirrors = get_enterprise()
+        protocol = "https://"
+    else:
+        continent = get_continent(str(request.remote_addr))
+        mirrors = get_mirrors(continent)
+
+    mirrorlist = render_template('mirrorlist', mirrors=mirrors, release=release, arch=arch, distro=distro, version=version, product=product, protocol=protocol)
 
     return Response(mirrorlist, mimetype='text/plain')
 

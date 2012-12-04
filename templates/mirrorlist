@@ -1,3 +1,3 @@
 {% for mirror in mirrors -%}
-    http://{{ mirror}}/{{ product }}/{{ version }}/{{ distro }}/{{ release }}/{{ arch }} 
+    {{ protocol }}{{ mirror}}/{{ product }}/{{ version }}/{{ distro }}/{{ release }}/{{ arch }} 
 {% endfor %}

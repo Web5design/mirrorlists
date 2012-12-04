@@ -8,6 +8,15 @@ server {
         }
 }
 
+- OR -
+
+server {
+	location / {
+	    include uwsgi_params;
+	    uwsgi_pass 127.0.0.1:3031;
+	}
+}
+
 -- uWSGI command
 uwsgi_python27 -s /tmp/uwsgi.sock  --module mirrorlists --callable app --chmod-socket 666
 
