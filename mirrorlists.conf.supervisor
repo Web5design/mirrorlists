@@ -1,0 +1,9 @@
+[program:mirrorlists]
+directory=/var/www/mirrorlists/
+command=/var/www/mirrorlists/mirrorlists.sh
+stdout_logfile=/var/log/supervisor/mirrorlists.log
+stderr_logfile=/var/log/supervisor/mirrorlists-error.log
+user=www-data
+autostart=false
+autorestart=false
+redirect_stderr=true
