@@ -74,7 +74,7 @@ def request_mirrorlist():
     config.read('eucalyptus_mirrors.conf')
 
     protocol = "http://"
-    release = request.values.get('release', '6')
+    release = request.values.get('releasever', '6')
     arch = request.values.get('arch', 'x86_64')
     distro = request.values.get('distro', 'centos')
     version = request.values.get('version', config.get('Config', 'eucalyptus-latest'))
