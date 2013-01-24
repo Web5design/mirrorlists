@@ -18,6 +18,8 @@ def get_continent(host_ip):
     country = geoip.country_code_by_addr(host_ip)
     if country == '':
         return 'North America'
+    elif country == 'EU':
+        return 'Europe'
     else:
         return transformations.cca_to_ctn(country)
 
